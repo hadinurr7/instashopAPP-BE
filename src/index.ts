@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
-import { PORT } from "./config";
 import authRouter from "./routes/auth.router";
+import { PORT } from "./config";
 
 const app = express();
 app.use(express.json());
