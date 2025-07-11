@@ -39,5 +39,15 @@ export const findUserByEmail = async (email: string) => {
   return result.rows[0];
 };
 
-
+export const updateUserPasswordById = async (
+  id: number,
+  hashedPassword: string
+) => {
+  await pool.query(
+    `UPDATE "instashopApps"."users"
+     SET password = $1, updated_at = CURRENT_TIMESTAMP
+     WHERE id = $2`,
+    [hashedPassword, id]
+  );
+};
 

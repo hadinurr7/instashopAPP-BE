@@ -3,15 +3,19 @@ import jwt, { sign } from "jsonwebtoken";
 import {
   createUser,
   findUserByEmail,
-  findUserByEmailOrUsername
+  findUserByEmailOrUsername,
+  findUserById,
+  updateUserPasswordById
 } from "../../models/auth/auth.models";
 import {
   ForgotPasswordPayload,
   LoginPayload,
-  RegisterPayload
+  RegisterPayload,
+  ResetPasswordPayload
 } from "../../types/api/payload/auth.types";
 import { sendResetEmail } from "../../lib/email";
 import { JWT_SECRET, JWT_SECRET_FORGOT_PASSWORD } from "../../config";
+import { hashPassword } from "../../middleware/argon";
 
 
 export async function registerUser(payload: RegisterPayload) {
@@ -69,6 +73,18 @@ export const forgotPasswordService = async (payload: ForgotPasswordPayload) => {
   };
 };
 
+export const resetPasswordService = async (payload: ResetPasswordPayload) => {
+  const { id, newPassword } = payload;
 
+  const user = await findUserById(id);
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const hashedPassword = await hashPassword(newPassword);
+  await updateUserPasswordById(id, hashedPassword);
+
+  return { message: "Password reset success" };
+};
 
 
