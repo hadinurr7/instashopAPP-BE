@@ -1,13 +1,16 @@
 import { Request } from "express";
 import {
+  forgotPasswordService,
   loginUser,
   registerUser
 } from "../../services/auth/auth.services";
 import {
+  ForgotPasswordResponse,
   LoginResponse,
   RegisterResponse
 } from "../../types/api/response/auth.response";
 import { TypedResponse } from "../../types/api/response/typed.response";
+import { ForgotPasswordPayload } from "../../types/api/payload/auth.types";
 
 export const registerUserController = async (
   req: Request,
@@ -85,4 +88,38 @@ export const loginUserController = async (
   }
 };
 
+export const forgotPasswordController = async (
+  req: Request,
+  res: TypedResponse<ForgotPasswordResponse>
+) => {
+  try {
+    const payload: ForgotPasswordPayload = req.body;
+
+    if (!payload.email) {
+      res.status(400).json({
+        status: 0,
+        message: "Email is required",
+        data: {},
+      });
+      return;
+    }
+
+    const result = await forgotPasswordService(payload);
+
+    res.status(200).json({
+      status: 1,
+      message: result.message,
+      data: { token: result.token },
+    });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to send reset link";
+
+    res.status(400).json({
+      status: 0,
+      message,
+      data: {},
+    });
+  }
+};
 
