@@ -2,12 +2,14 @@ import { Request } from "express";
 import {
   forgotPasswordService,
   loginUser,
-  registerUser
+  registerUser,
+  resetPasswordService,
 } from "../../services/auth/auth.services";
 import {
   ForgotPasswordResponse,
   LoginResponse,
-  RegisterResponse
+  RegisterResponse,
+  ResetPasswordResponse,
 } from "../../types/api/response/auth.response";
 import { TypedResponse } from "../../types/api/response/typed.response";
 import { ForgotPasswordPayload } from "../../types/api/payload/auth.types";
@@ -123,3 +125,48 @@ export const forgotPasswordController = async (
   }
 };
 
+export const resetPasswordController = async (
+  req: Request,
+  res: TypedResponse<ResetPasswordResponse>
+) => {
+  try {
+    const id = Number(res.locals.user.id);
+
+    if (!id) {
+      res.status(401).json({
+        status: 0,
+        message: "Unauthorized or invalid reset token",
+        data: {},
+      });
+      return;
+    }
+
+    const { newPassword } = req.body;
+
+    if (!newPassword) {
+      res.status(400).json({
+        status: 0,
+        message: "New password is required",
+        data: {},
+      });
+      return;
+    }
+
+    const result = await resetPasswordService({ id, newPassword });
+
+    res.status(200).json({
+      status: 1,
+      message: result.message,
+      data: {},
+    });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to reset password";
+
+    res.status(400).json({
+      status: 0,
+      message,
+      data: {},
+    });
+  }
+};
