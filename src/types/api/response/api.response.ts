@@ -7,5 +7,6 @@ export interface Pagination {
   totalPage: number;
   totalData: number;
   page: number;
+  offset: number
 }
 

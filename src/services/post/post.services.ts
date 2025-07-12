@@ -1,4 +1,5 @@
-import { createPost } from "../../models/post/post.models";
+import { countUserPosts, createPost, getPosts } from "../../models/post/post.models";
+import { getUserByUsernameWithDetails } from "../../models/user/user.models";
 import {
   CreatePostPayload,
   PostDataPayload,
@@ -9,3 +10,44 @@ export const createPostService = async (
   return createPost(payload);
 };
 
+
+export const getUserPostsService = async (
+  username: string,
+  offset: number,
+  limit: number,
+  page: number
+) => {
+  const user = await getUserByUsernameWithDetails(username);
+  if (!user) throw new Error("User not found");
+
+  return buildPostsPayload(user.id, offset, limit, page);
+};
+
+export const getMyPostsService = async (
+  userId: number,
+  offset: number,
+  limit: number,
+  page: number
+) => {
+  return buildPostsPayload(userId, offset, limit, page);
+};
+
+const buildPostsPayload = async (
+  userId: number,
+  offset: number,
+  limit: number,
+  page: number
+) => {
+  const posts = await getPosts(userId, limit, offset);
+  const total = await countUserPosts(userId);
+
+  return {
+    posts,
+    pagination: {
+      page,
+      limit,
+      totalPage: Math.ceil(total / limit),
+      totalData: total,
+    },
+  };
+};
