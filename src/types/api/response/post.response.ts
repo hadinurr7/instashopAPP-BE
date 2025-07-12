@@ -9,6 +9,10 @@ export interface PostData {
   createdAt: string;
 }
 
+export interface GetPostResponse extends Pagination {
+  username : string
+}
+
 
 export interface CreatePostResponse extends GeneralResponse {
   data: PostData | Record<string, never>;

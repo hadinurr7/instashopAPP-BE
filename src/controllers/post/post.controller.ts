@@ -1,10 +1,11 @@
-import { Request, Response } from "express";import { cloudinary } from "../../lib/cloudinary";
+import { Request, Response } from "express";
+import { cloudinary } from "../../lib/cloudinary";
 import { UploadApiResponse } from "cloudinary";
 import streamifier from "streamifier";
 import { CreatePostPayload } from "../../types/api/payload/post.types";
 import { TypedResponse } from "../../types/api/response/typed.response";
-import { CreatePostResponse } from "../../types/api/response/post.response";
-import { createPostService } from "../../services/post/post.services";
+import { CreatePostResponse, PostListResponse } from "../../types/api/response/post.response";
+import { createPostService, getMyPostsService, getUserPostsService } from "../../services/post/post.services";
 
 export const createPostController = async (
   req: Request,
@@ -15,23 +16,23 @@ export const createPostController = async (
     const { title, content, status } = req.body;
 
     if (!title) {
-       res.status(400).json({
+      res.status(400).json({
         status: 0,
         message: "title is required",
         data: {},
       });
-      return
+      return;
     }
 
     const files = req.files as Express.Multer.File[];
 
     if (!files || files.length === 0) {
-       res.status(400).json({
+      res.status(400).json({
         status: 0,
         message: "media is required",
         data: {},
       });
-      return
+      return;
     }
 
     const uploadPromises = files.map((file) => {
@@ -69,7 +70,7 @@ export const createPostController = async (
       data: newPost,
     });
   } catch (error) {
-    console.error("CREATE POST ERROR", error);
+    // console.error("create post error", error);
     return res.status(500).json({
       status: 0,
       message: error instanceof Error ? error.message : "failed to create post",
@@ -77,3 +78,57 @@ export const createPostController = async (
     });
   }
 };
+
+export const getMyPostsController = async (req: Request, res: Response) => {
+  try {
+    const currentUserId = Number(res.locals.user.id);
+    console.log("ini id current user :", currentUserId);
+
+    const page = Math.max(parseInt(req.query.page as string) || 1, 1);
+    const limit = Math.max(parseInt(req.query.limit as string) || 9, 1);
+    const offset = (page - 1) * limit;
+
+    const data = await getMyPostsService(currentUserId, offset, limit, page);
+
+    res.status(200).json({
+      status: 1,
+      message: "my posts fetch success",
+      data,
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: 0,
+      message: error instanceof Error ? error.message : "failed to fetch posts",
+      data: {},
+    });
+  }
+};
+
+export const getUserPostsController = async (
+  req: Request,
+  res: TypedResponse<PostListResponse>
+) => {
+  try {
+    const { username } = req.params;
+
+    const page = Math.max(parseInt(req.query.page as string) || 1, 1);
+    const limit = Math.max(parseInt(req.query.limit as string) || 9, 1);
+    const offset = (page - 1) * limit;
+
+    const data = await getUserPostsService(username, offset, limit, page);
+
+    res.status(200).json({
+      status: 1,
+      message: "user posts fetch success",
+      data,
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: 0,
+      message: error instanceof Error ? error.message : "failed to fetch posts",
+      data: {},
+    });
+  }
+};
+
+
