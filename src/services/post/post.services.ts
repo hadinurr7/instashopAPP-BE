@@ -1,4 +1,4 @@
-import { countUserPosts, createPost, getPosts, updatePost } from "../../models/post/post.models";
+import { countUserPosts, createPost, deletePost, getPosts, updatePost } from "../../models/post/post.models";
 import { getUserByUsernameWithDetails } from "../../models/user/user.models";
 import {
   CreatePostPayload,
@@ -57,4 +57,11 @@ export const updatePostService = async (
   payload: UpdatePostPayload
 ): Promise<PostDataPayload> => {
   return updatePost(payload);
+};
+
+export const deletePostService = async (
+  postId: number,
+  userId: number
+): Promise<PostDataPayload> => {
+  return deletePost(postId, userId);
 };
