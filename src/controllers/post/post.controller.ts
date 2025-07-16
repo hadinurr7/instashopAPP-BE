@@ -2,10 +2,21 @@ import { Request, Response } from "express";
 import { cloudinary } from "../../lib/cloudinary";
 import { UploadApiResponse } from "cloudinary";
 import streamifier from "streamifier";
-import { CreatePostPayload } from "../../types/api/payload/post.types";
+import {
+  CreatePostPayload,
+  UpdatePostPayload,
+} from "../../types/api/payload/post.types";
 import { TypedResponse } from "../../types/api/response/typed.response";
-import { CreatePostResponse, PostListResponse } from "../../types/api/response/post.response";
-import { createPostService, getMyPostsService, getUserPostsService } from "../../services/post/post.services";
+import {
+  CreatePostResponse,
+  PostListResponse,
+} from "../../types/api/response/post.response";
+import {
+  createPostService,
+  getMyPostsService,
+  getUserPostsService,
+  updatePostService,
+} from "../../services/post/post.services";
 
 export const createPostController = async (
   req: Request,
@@ -79,7 +90,10 @@ export const createPostController = async (
   }
 };
 
-export const getMyPostsController = async (req: Request, res: Response) => {
+export const getMyPostsController = async (
+  req: Request,
+  res: TypedResponse<PostListResponse>
+) => {
   try {
     const currentUserId = Number(res.locals.user.id);
     console.log("ini id current user :", currentUserId);
@@ -126,6 +140,51 @@ export const getUserPostsController = async (
     res.status(404).json({
       status: 0,
       message: error instanceof Error ? error.message : "failed to fetch posts",
+      data: {},
+    });
+  }
+};
+
+export const updatePostController = async (
+  req: Request,
+  res: TypedResponse<CreatePostResponse>
+) => {
+  try {
+    const userId = Number(res.locals.user.id);
+    const postId = Number(req.params.id);
+    const { title, content } = req.body;
+
+    // console.log(userId);
+    // console.log(postId);
+
+    if (!postId) {
+      res.status(400).json({
+        status: 0,
+        message: "post not found",
+        data: {},
+      });
+      return;
+    }
+
+
+    const payload: UpdatePostPayload = {
+      postId,
+      userId,
+      title,
+      content,
+    };
+
+    const updatedPost = await updatePostService(payload);
+
+    return res.status(200).json({
+      status: 1,
+      message: "post updated",
+      data: updatedPost,
+    });
+  } catch (err) {
+    return res.status(400).json({
+      status: 0,
+      message: err instanceof Error ? err.message : "failed to update post",
       data: {},
     });
   }

@@ -1,8 +1,9 @@
-import { countUserPosts, createPost, getPosts } from "../../models/post/post.models";
+import { countUserPosts, createPost, getPosts, updatePost } from "../../models/post/post.models";
 import { getUserByUsernameWithDetails } from "../../models/user/user.models";
 import {
   CreatePostPayload,
   PostDataPayload,
+  UpdatePostPayload,
 } from "../../types/api/payload/post.types";
 
 export const createPostService = async (
@@ -50,4 +51,10 @@ const buildPostsPayload = async (
       totalData: total,
     },
   };
+};
+
+export const updatePostService = async (
+  payload: UpdatePostPayload
+): Promise<PostDataPayload> => {
+  return updatePost(payload);
 };

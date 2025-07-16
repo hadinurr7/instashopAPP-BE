@@ -14,3 +14,11 @@ export interface CreatePostPayload {
   media: string[];
   status?: "active" | "innactive";
 }
+
+export interface UpdatePostPayload {
+  postId: number;
+  userId: number;
+  title?: string;
+  content?: string;
+  media?: string[];
+}
