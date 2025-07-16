@@ -1,6 +1,6 @@
 import express from "express";
 import { verifyToken } from "../middleware/jwt";
-import { createPostController, getMyPostsController, getUserPostsController, updatePostController } from "../controllers/post/post.controller";
+import { createPostController, deletePostController, getMyPostsController, getUserPostsController, updatePostController } from "../controllers/post/post.controller";
 import { upload } from "../middleware/multer";
 
 const router = express.Router();
@@ -18,5 +18,7 @@ router.patch(
   upload.array("media", 10),
   updatePostController
 );
+
+router.patch("/me/posts/:id/delete", verifyToken, deletePostController);
 
 export default router;

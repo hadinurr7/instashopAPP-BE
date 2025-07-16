@@ -13,6 +13,7 @@ import {
 } from "../../types/api/response/post.response";
 import {
   createPostService,
+  deletePostService,
   getMyPostsService,
   getUserPostsService,
   updatePostService,
@@ -166,7 +167,6 @@ export const updatePostController = async (
       return;
     }
 
-
     const payload: UpdatePostPayload = {
       postId,
       userId,
@@ -190,4 +190,38 @@ export const updatePostController = async (
   }
 };
 
+export const deletePostController = async (
+  req: Request,
+  res: TypedResponse<CreatePostResponse>
+) => {
+  try {
+    const userId = Number(res.locals.user.id);
+    const postId = Number(req.params.id);
 
+    console.log(userId);
+    console.log(postId);
+
+    const deletedPost = await deletePostService(postId, userId);
+
+    if (!deletedPost) {
+      res.status(404).json({
+        status: 0,
+        message: "Post not found or already inactive",
+        data: {},
+      });
+      return;
+    }
+
+    return res.status(200).json({
+      status: 1,
+      message: "post deleted (soft)",
+      data: deletedPost,
+    });
+  } catch (err) {
+    return res.status(400).json({
+      status: 0,
+      message: err instanceof Error ? err.message : "failed to delete post",
+      data: {},
+    });
+  }
+};

@@ -75,3 +75,17 @@ export const updatePost = async (
 
   return result.rows[0];
 };
+
+export const deletePost = async (postId: number, userId: number): Promise<PostDataPayload> => {
+  const result = await pool.query(
+    `
+    UPDATE "instashopApps"."posts"
+    SET status = 'innactive', updated_at = NOW()
+    WHERE id = $1 AND user_id = $2 AND status = 'active'
+    RETURNING id, user_id AS "userId", title, content, media, status, created_at AS "createdAt"
+    `,
+    [postId, userId]
+  );
+  return result.rows[0];
+};
+
