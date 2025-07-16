@@ -29,3 +29,7 @@ export interface PostListResponse extends GeneralResponse {
 export interface PostDetailResponse extends GeneralResponse {
   data: PostData | Record<string, never>;
 }
+
+export interface UpdatePostResponse extends GeneralResponse {
+  data: PostData | Record<string, never>;
+}
