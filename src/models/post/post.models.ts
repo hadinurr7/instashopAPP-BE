@@ -14,7 +14,7 @@ export const createPost = async (
     `
     INSERT INTO "instashopApps"."posts" (user_id, title, content, media, status)
     VALUES ($1, $2, $3, $4::text[], $5)
-    RETURNING id, user_id AS "userId", title, content, media, tatus, created_at AS "createdAt"
+    RETURNING id, user_id AS "userId", title, content, media, status, created_at AS "createdAt"
     `,
     [userId, title, content, media, status]
   );

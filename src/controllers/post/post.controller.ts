@@ -214,7 +214,7 @@ export const deletePostController = async (
 
     return res.status(200).json({
       status: 1,
-      message: "post deleted (soft)",
+      message: "post deleted",
       data: deletedPost,
     });
   } catch (err) {
