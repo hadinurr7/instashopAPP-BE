@@ -15,3 +15,18 @@ const result = await pool.query(
 
   return result.rows[0];
 };
+
+export const getStoriesByUserId = async (
+  userId: number
+): Promise<StoryDataPayload[]> => {
+  const result = await pool.query(
+    `
+    SELECT id, user_id AS "userId", media, content, created_at AS "createdAt"
+    FROM "instashopApps"."stories"
+    WHERE user_id = $1
+    ORDER BY created_at DESC
+    `,
+    [userId]
+  );
+  return result.rows;
+};

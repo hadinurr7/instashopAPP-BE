@@ -1,4 +1,4 @@
-import { createStory } from "../../models/story/story.models";
+import { createStory, getStoriesByUserId } from "../../models/story/story.models";
 import { CreateStoryPayload, StoryDataPayload } from "../../types/api/payload/story.types";
 
 
@@ -6,4 +6,8 @@ export const createStoryService = async (
   payload: CreateStoryPayload
 ): Promise<StoryDataPayload> => {
   return createStory(payload);
+};
+
+export const getMyStoriesService = async (userId: number) => {
+  return getStoriesByUserId(userId);
 };
