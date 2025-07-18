@@ -30,3 +30,22 @@ export const getStoriesByUserId = async (
   );
   return result.rows;
 };
+
+export const getFollowingStories = async (
+  userId: number
+): Promise<StoryDataPayload[]> => {
+  const result = await pool.query(
+    `
+    SELECT s.id, s.user_id AS "userId", s.media, s.content, s.created_at AS "createdAt"
+    FROM "instashopApps"."stories" s
+    WHERE s.user_id IN (
+      SELECT following_id
+      FROM "instashopApps"."follows"
+      WHERE follower_id = $1
+    )
+    ORDER BY s.created_at DESC
+    `,
+    [userId]
+  );
+  return result.rows;
+};
