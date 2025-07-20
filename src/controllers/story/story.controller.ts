@@ -2,7 +2,7 @@ import { Request } from "express";
 import { cloudinary } from "../../lib/cloudinary";
 import { UploadApiResponse } from "cloudinary";
 import streamifier from "streamifier";
-import { createStoryService, getFollowingsStoriesService, getMyStoriesService } from "../../services/story/story.service";
+import { createStoryService, getFollowingsStoriesService, getMyStoriesService, getUserStoriesService } from "../../services/story/story.service";
 import { TypedResponse } from "../../types/api/response/typed.response";
 import { CreateStoryResponse, GetStoriesResponse } from "../../types/api/response/story.response";
 
@@ -102,6 +102,30 @@ export const getFollowingStoriesController = async (
         error instanceof Error
           ? error.message
           : "failed to fetch followings' stories",
+      data: [],
+    });
+  }
+};
+
+
+export const getUserStoriesController = async (
+  req: Request,
+  res: TypedResponse<GetStoriesResponse>
+) => {
+  try {
+    const userId = Number(req.params.id);
+
+    const stories = await getUserStoriesService(userId);
+
+    return res.status(200).json({
+      status: 1,
+      message: "user stories fetched",
+      data: stories,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 0,
+      message: error instanceof Error ? error.message : "failed to get user stories",
       data: [],
     });
   }

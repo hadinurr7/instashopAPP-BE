@@ -1,4 +1,4 @@
-import { createStory, getFollowingStories, getStoriesByUserId } from "../../models/story/story.models";
+import { createStory, getFollowingStories, getStoriesByUserId, getUserStories } from "../../models/story/story.models";
 import { CreateStoryPayload, StoryDataPayload } from "../../types/api/payload/story.types";
 
 
@@ -14,4 +14,8 @@ export const getMyStoriesService = async (userId: number) => {
 
 export const getFollowingsStoriesService = async (userId: number) => {
   return getFollowingStories(userId);
+};
+
+export const getUserStoriesService = async (userId: number): Promise<StoryDataPayload[]> => {
+  return getUserStories(userId);
 };
