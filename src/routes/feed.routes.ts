@@ -5,8 +5,8 @@ import { getFeedPostsController, getFeedStoriesController } from "../controllers
 
 const router = express.Router();
 
-router.get("/feeds/post", verifyToken, getFeedPostsController);
-router.get("/feeds/stories", verifyToken, getFeedStoriesController);
+router.get("/post", verifyToken, getFeedPostsController);
+router.get("/stories", verifyToken, getFeedStoriesController);
 
 
 export default router;
