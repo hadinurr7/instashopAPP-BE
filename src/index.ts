@@ -6,6 +6,7 @@ import postRouter from "./routes/post.router";
 import storyRouter from "./routes/story.router";
 import feedsRouter from "./routes/feed.routes";
 import exploreRouter from "./routes/explore.router";
+import likeRouter from "./routes/like.router";
 
 const app = express();
 app.use(express.json());
@@ -16,6 +17,7 @@ app.use("/posts", postRouter);
 app.use("/story", storyRouter);
 app.use("/feeds", feedsRouter);
 app.use("/explore", exploreRouter);
+app.use("/like", likeRouter);
 
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
