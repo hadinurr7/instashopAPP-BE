@@ -6,7 +6,7 @@ export const createComment = async (
   content: string
 ) => {
   const result = await pool.query(
-    `INSERT INTO comments (user_id, post_id, content) VALUES ($1, $2, $3) RETURNING *`,
+    `INSERT INTO "instashopApps"."comments" (user_id, post_id, content) VALUES ($1, $2, $3) RETURNING *`,
     [userId, postId, content]
   );
   return result.rows[0];
