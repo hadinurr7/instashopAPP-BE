@@ -8,6 +8,7 @@ import feedsRouter from "./routes/feed.routes";
 import exploreRouter from "./routes/explore.router";
 import likeRouter from "./routes/like.router";
 import commentRouter from "./routes/comment.router";
+import followRouter from "./routes/follow.router";
 
 const app = express();
 app.use(express.json());
@@ -20,6 +21,7 @@ app.use("/feeds", feedsRouter);
 app.use("/explore", exploreRouter);
 app.use("/like", likeRouter);
 app.use("/comments", commentRouter);
+app.use("/follows", followRouter);
 
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
