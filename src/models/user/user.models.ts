@@ -61,20 +61,6 @@ export const getFollowing = async (userId: number) => {
   return result.rows;
 };
 
-export const isFollowedByUser = async (
-  targetUserId: number,
-  currentUserId: number
-) => {
-  const result = await pool.query(
-    `
-    SELECT 1
-    FROM "instashopApps"."follows"
-    WHERE follower_id = $1 AND following_id = $2
-    `,
-    [currentUserId, targetUserId]
-  );
-  return result.rowCount ?? 0;
-};
 
 
 
