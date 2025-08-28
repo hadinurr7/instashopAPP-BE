@@ -15,12 +15,6 @@ export const CLOUDINARY_API_KEY= process.env.CLOUDINARY_API_KEY
 export const CLOUDINARY_API_SECRET=process.env.CLOUDINARY_API_SECRET
 export const CLOUDINARY_CLOUD_NAME=process.env.CLOUDINARY_CLOUD_NAME
 
-// console.log({
-//   CLOUDINARY_CLOUD_NAME,
-//   CLOUDINARY_API_KEY,
-//   CLOUDINARY_API_SECRET
-// });
-
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
