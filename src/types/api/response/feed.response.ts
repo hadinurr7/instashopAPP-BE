@@ -3,7 +3,7 @@ import { GeneralResponse } from "./api.response";
 export interface FeedPost {
   id: number;
   userId: number;
-  name: string; //
+  name: string; 
   profilePicture: string;
   content: string;
   media: string;
