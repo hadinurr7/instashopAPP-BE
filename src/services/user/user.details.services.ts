@@ -1,23 +1,21 @@
 import {
+  findUserById,
   getFollowers,
   getFollowing,
   getUserByIdWithDetails,
   getUserByUsernameWithDetails,
-  isFollowedByUser
+  updateUserDetails,
 } from "../../models/user/user.models";
 import {
   GetMyProfilePayload,
-  GetUserProfilePayload
+  GetUserProfilePayload,
+  UpdateUserDetailsPayload,
 } from "../../types/api/payload/user.types";
 
-const UserDetails = async (
-  targetUserId: number,
-  currentUserId: number
-) => {
+const UserDetails = async (targetUserId: number, currentUserId: number) => {
   const user = await getUserByIdWithDetails(targetUserId);
   const followers = await getFollowers(targetUserId);
   const following = await getFollowing(targetUserId);
-  const isFollowed = await isFollowedByUser(targetUserId, currentUserId);
 
   return {
     id: user.id,
@@ -29,7 +27,6 @@ const UserDetails = async (
     totalFollowing: following.length,
     totalPosts: user.total_posts,
     isPrivate: user.is_private,
-    isFollowedByCurrentUser: Boolean(isFollowed),
     followedBy: followers.map((follower) => ({
       userId: follower.id,
       username: follower.username,
@@ -56,5 +53,25 @@ export const getMyDetailsService = async (payload: GetMyProfilePayload) => {
   return await UserDetails(user.id, userId);
 };
 
+export async function UpdateUserDetailsService(
+  payload: UpdateUserDetailsPayload
+) {
+  const { userId, fullname, bio, profilePicture, isPrivate } = payload;
 
+  const currentUser = await findUserById(userId);
+  if (!currentUser) {
+    throw new Error("User not found");
+  }
 
+  const updatedUser = await updateUserDetails(
+    userId,
+    fullname,
+    bio,
+    profilePicture,
+    isPrivate
+  );
+
+  return {
+    data: updatedUser,
+  };
+}

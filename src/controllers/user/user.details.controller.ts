@@ -1,7 +1,8 @@
 import { Request } from "express";
 import {
   getMyDetailsService,
-  getUserDetailsService
+  getUserDetailsService,
+  UpdateUserDetailsService
 } from "../../services/user/user.details.services";
 import { GetMyProfilePayload, GetUserProfilePayload } from "../../types/api/payload/user.types";
 import { TypedResponse } from "../../types/api/response/typed.response";
@@ -62,3 +63,35 @@ export const getMyDetailsController = async (req: Request, res: TypedResponse<Us
 };
 
 
+export const updateUserDetailsController = async (
+  req: Request,
+  res: TypedResponse<UserDetailsResponse>
+) => {
+  try {
+    const userId = Number(res.locals.user.id);
+    const { fullname, bio, profilePicture, isPrivate } = req.body;
+    
+    const payload = {
+      userId,
+      fullname,
+      bio,
+      profilePicture,
+      isPrivate
+    };
+
+    const result = await UpdateUserDetailsService(payload);
+
+    res.status(200).json({
+      status: 1,
+      message: "Profile updated successfully",
+      data: result.data,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to update profile";
+    res.status(400).json({
+      status: 0,
+      message,
+      data: {},
+    });
+  }
+};

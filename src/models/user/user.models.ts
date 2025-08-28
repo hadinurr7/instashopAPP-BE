@@ -1,6 +1,14 @@
 import { pool } from "../../config";
 import { UpdateUserDetailsPayload } from "../../types/api/payload/user.types";
 
+export const findUserById = async (id: number) => {
+  const result = await pool.query(
+    `SELECT * FROM "instashopApps"."users" WHERE id = $1`,
+    [id]
+  );
+  return result.rows[0];
+};
+
 export const getUserByIdWithDetails = async (userId: number) => {
   const result = await pool.query(
     `
@@ -59,6 +67,26 @@ export const getFollowing = async (userId: number) => {
     [userId]
   );
   return result.rows;
+};
+
+export const updateUserDetails = async (
+  userId: number,
+  fullname?: string | null,
+  bio?: string | null,
+  profilePicture?: string | null,
+  isPrivate?: boolean
+) => {
+  const result = await pool.query(
+    `UPDATE "instashopApps"."users" 
+     SET fullname = COALESCE($2, fullname),
+         bio = COALESCE($3, bio),
+         profile_picture = COALESCE($4, profile_picture),
+         is_private = COALESCE($5, is_private)
+     WHERE id = $1
+     RETURNING id, username, fullname, bio, profile_picture, is_private`,
+    [userId, fullname, bio, profilePicture, isPrivate]
+  );
+  return result.rows[0];
 };
 
 

@@ -97,7 +97,6 @@ export const getMyPostsController = async (
 ) => {
   try {
     const currentUserId = Number(res.locals.user.id);
-    console.log("ini id current user :", currentUserId);
 
     const page = Math.max(parseInt(req.query.page as string) || 1, 1);
     const limit = Math.max(parseInt(req.query.limit as string) || 9, 1);
@@ -105,13 +104,13 @@ export const getMyPostsController = async (
 
     const data = await getMyPostsService(currentUserId, offset, limit, page);
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 1,
       message: "my posts fetch success",
       data,
     });
   } catch (error) {
-    res.status(404).json({
+    return res.status(500).json({
       status: 0,
       message: error instanceof Error ? error.message : "failed to fetch posts",
       data: {},
@@ -132,13 +131,13 @@ export const getUserPostsController = async (
 
     const data = await getUserPostsService(username, offset, limit, page);
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 1,
       message: "user posts fetch success",
       data,
     });
   } catch (error) {
-    res.status(404).json({
+    return res.status(500).json({
       status: 0,
       message: error instanceof Error ? error.message : "failed to fetch posts",
       data: {},

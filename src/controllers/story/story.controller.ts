@@ -107,7 +107,6 @@ export const getFollowingStoriesController = async (
   }
 };
 
-
 export const getUserStoriesController = async (
   req: Request,
   res: TypedResponse<GetStoriesResponse>

@@ -24,13 +24,17 @@ export const getUserPostsService = async (
   return buildPostsPayload(user.id, offset, limit, page);
 };
 
-export const getMyPostsService = async (
-  userId: number,
-  offset: number,
-  limit: number,
-  page: number
-) => {
-  return buildPostsPayload(userId, offset, limit, page);
+export const getMyPostsService = async (userId: number, offset: number, limit: number, page: number) => {
+  const posts = await getPosts(userId, limit, offset);
+  const totalPosts = await countUserPosts(userId);
+
+  return {
+    page,
+    limit,
+    totalPosts,
+    totalPages: Math.ceil(totalPosts / limit),
+    posts
+  };
 };
 
 const buildPostsPayload = async (
