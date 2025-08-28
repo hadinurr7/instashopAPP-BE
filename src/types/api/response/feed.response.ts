@@ -3,8 +3,8 @@ import { GeneralResponse } from "./api.response";
 export interface FeedPost {
   id: number;
   userId: number;
-  name: string; // nama user
-  profilePicture: string; // foto user
+  name: string; 
+  profilePicture: string;
   content: string;
   media: string;
   createdAt: string;

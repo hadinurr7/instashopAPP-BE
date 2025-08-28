@@ -37,6 +37,7 @@ export const registerUserController = async (
       message: result.message,
       data: {},
     });
+    
   } catch (error) {
     const message = error instanceof Error ? error.message : "Register failed";
 

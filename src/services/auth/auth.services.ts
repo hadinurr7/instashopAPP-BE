@@ -27,8 +27,8 @@ export async function registerUser(payload: RegisterPayload) {
   if (existing) throw new Error("email or username already registered");
 
   const hashedPassword = await argon2.hash(password);
-  await createUser(username, email, hashedPassword);
 
+  await createUser(username, email, hashedPassword);
   return { message: "Register success" };
 }
 
@@ -63,7 +63,7 @@ export const forgotPasswordService = async (payload: ForgotPasswordPayload) => {
   });
   console.log(token);
 
-  const resetLink = `http://localhost:3000/reset-password?token=${token}`;
+  const resetLink = `http://localhost:8000/reset-password?token=${token}`;
 
   await sendResetEmail(user.email, resetLink, user.username);
 

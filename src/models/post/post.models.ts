@@ -29,16 +29,32 @@ export const getPosts = async (
 ) => {
   const result = await pool.query(
     `
-    SELECT  id, title, content, media, status, created_at AS "createdAt"
-    FROM    "instashopApps"."posts"
-    WHERE   user_id   = $1
-    AND     status     = 'active'
-    ORDER BY created_at DESC
-    LIMIT   $2 OFFSET $3
+    SELECT p.id,
+           p.title,
+           p.content,
+           p.media,
+           p.status,
+           p.created_at AS "createdAt",
+           COALESCE(l.count, 0) AS likes,
+           COALESCE(c.count, 0) AS comments
+    FROM "instashopApps"."posts" p
+    LEFT JOIN (
+      SELECT post_id, COUNT(*) AS count
+      FROM "instashopApps"."likes"
+      GROUP BY post_id
+    ) l ON l.post_id = p.id
+    LEFT JOIN (
+      SELECT post_id, COUNT(*) AS count
+      FROM "instashopApps"."comments"
+      GROUP BY post_id
+    ) c ON c.post_id = p.id
+    WHERE p.user_id = $1
+      AND p.status = 'active'
+    ORDER BY p.created_at DESC
+    LIMIT $2 OFFSET $3
     `,
     [userId, limit, offset]
   );
-
   return result.rows;
 };
 
@@ -76,7 +92,10 @@ export const updatePost = async (
   return result.rows[0];
 };
 
-export const deletePost = async (postId: number, userId: number): Promise<PostDataPayload> => {
+export const deletePost = async (
+  postId: number,
+  userId: number
+): Promise<PostDataPayload> => {
   const result = await pool.query(
     `
     UPDATE "instashopApps"."posts"
@@ -88,4 +107,3 @@ export const deletePost = async (postId: number, userId: number): Promise<PostDa
   );
   return result.rows[0];
 };
-

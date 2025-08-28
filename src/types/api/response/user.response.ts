@@ -10,7 +10,6 @@ export interface UserDetailsData {
   totalFollowing: number;
   totalPosts: number;
   isPrivate: boolean;
-  isFollowedByCurrentUser: boolean;
   followedBy: {
     userId: number;
     username: string;

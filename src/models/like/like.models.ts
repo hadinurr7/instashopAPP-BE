@@ -1,4 +1,3 @@
-// models/like/like.models.ts
 import { pool } from "../../config";
 
 export const findLike = async (
