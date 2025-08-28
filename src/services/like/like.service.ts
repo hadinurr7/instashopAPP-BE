@@ -1,4 +1,3 @@
-// services/like/like.service.ts
 import { findLike, createLike, deleteLike } from "../../models/like/like.models";
 
 export const toggleLikeService = async (
